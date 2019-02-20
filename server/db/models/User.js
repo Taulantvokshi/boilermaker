@@ -2,7 +2,7 @@ const crypto = require("crypto");
 const _ = require("lodash");
 const Sequelize = require("sequelize");
 
-const db = require("./db");
+const db = require("../db");
 
 const User = db.define(
   "user",
@@ -16,6 +16,9 @@ const User = db.define(
       type: Sequelize.STRING
     },
     salt: {
+      type: Sequelize.STRING
+    },
+    google_id: {
       type: Sequelize.STRING
     }
   },

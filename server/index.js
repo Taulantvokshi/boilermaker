@@ -14,6 +14,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "../public")));
 
+if (process.env.NODE_ENV !== "development") require("./secrets");
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "a wildly insecure secret",
