@@ -4,24 +4,15 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const passport = require("passport");
-//const User = require("./db/models/User.js");
-//const SequelizeStore = require("connect-session-sequelize")(session.Store);
+const db = require("./db/db");
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
 const app = express();
 // you'll of course want static middleware so your browser can request things like your 'bundle.js'
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "../public")));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-// configure and create our database store
-
-// const dbStore = new SequelizeStore({ db });
-
-// // sync so that our session table gets created
-// dbStore.sync();
 
 app.use(
   session({
@@ -30,6 +21,9 @@ app.use(
     saveUninitialized: false
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 passport.serializeUser((user, done) => {
   try {
@@ -44,6 +38,12 @@ passport.deserializeUser((id, done) => {
     .then(user => done(null, user))
     .catch(done);
 });
+
+const dbStore = new SequelizeStore({ db: db });
+
+// sync so that our session table gets created
+dbStore.sync();
+// plug the store into our session middleware
 
 //api routes
 app.use("/api", require("./api/index"));
