@@ -7,4 +7,4 @@ const User = db.define("User", {
   }
 });
 
-module.exports = { User };
+module.exports = User;
